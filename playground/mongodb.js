@@ -27,7 +27,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (error, client) => {
     if (error) {
       return console.log('Could not write to Mongo DB');
     }
-    console.log(result.ops[0]._id.getTimestamp());
+    console.log("Success!");
   })
 
   client.close();
