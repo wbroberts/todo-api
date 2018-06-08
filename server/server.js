@@ -23,24 +23,29 @@ app.post('/todos', (req, res) => {
   });
 });
 
+// Adds a user to the db
 app.post('/users', (req, res) => {
-
   const user = new User({
     email: req.body.email
   });
 
+  // First checks if the email already exists before adding
   User.findOne({
     email: user.email
   }).then(result => {
-    if (!result) {
-      user.save().then(user => {
-        res.send(user);
-      });   
-    } else {
-      res.send({
+
+    if (result) {
+      return res.send({
         error: 'That email already exists'
-      })
+      });
     }
+
+    user.save().then(user => {
+      res.send(user);
+    }, e => {
+      res.send(e);
+    }); 
+
   }, e => {
     res.send(e);
   });
