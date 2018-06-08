@@ -6,6 +6,7 @@ const { Todo } = require('./models/todo');
 const { User } = require('./models/user');
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -22,6 +23,8 @@ app.post('/todos', (req, res) => {
   });
 });
 
+// This is receives a GET request and sends back the todos
+// -- important for sending back JSON data
 app.get('/todos', (req, res) => {
   Todo.find().then(todos => {
     res.send({todos});
@@ -30,8 +33,10 @@ app.get('/todos', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('App running on port 3000');
+
+// This is the actual server running
+app.listen(port, () => {
+  console.log(`App is running on port ${port}`);
 });
 
 module.exports = {
