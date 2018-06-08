@@ -10,7 +10,7 @@ const todos = [{
   text: 'second todo'
 }, {
   text: 'third todo'
-}]
+}];
 
 beforeEach((done) => {
   Todo.remove({}).then(() => {
@@ -41,6 +41,7 @@ describe('POST /Todos', () => {
           done();
         }).catch(err => done(err));
       });
+
   });
 
   it('should not create a todo', (done) => {
@@ -59,11 +60,15 @@ describe('POST /Todos', () => {
           done();
         }).catch(err => done(err));
       });
+
   });
+
 });
 
 describe('GET /todos', () => {
+
   it('should get all todos', (done) => {
+
     request(app)
       .get('/todos')
       .expect(200)
@@ -71,5 +76,7 @@ describe('GET /todos', () => {
         expect(res.body.todos.length).toBe(3);
       })
       .end(done);
+
   });
+
 });

@@ -23,6 +23,30 @@ app.post('/todos', (req, res) => {
   });
 });
 
+app.post('/users', (req, res) => {
+
+  const user = new User({
+    email: req.body.email
+  });
+
+  User.findOne({
+    email: user.email
+  }).then(result => {
+    if (!result) {
+      user.save().then(user => {
+        res.send(user);
+      });   
+    } else {
+      res.send({
+        error: 'That email already exists'
+      })
+    }
+  }, e => {
+    res.send(e);
+  });
+
+});
+
 // This is receives a GET request and sends back the todos
 // -- important for sending back JSON data
 app.get('/todos', (req, res) => {
