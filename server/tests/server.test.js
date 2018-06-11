@@ -5,6 +5,7 @@ const { ObjectID } = require('mongodb');
 const { app } = require('./../server');
 const { Todo } = require('./../models/todo');
 
+// Array of todos to test against
 const todos = [{
   _id: new ObjectID(),
   text: 'first todo'
@@ -16,6 +17,8 @@ const todos = [{
   text: 'third todo'
 }];
 
+// Deletes db and adds the todos up above to db for
+// consistent and accurate testing
 beforeEach((done) => {
   Todo.remove({}).then(() => {
     return Todo.insertMany(todos);
@@ -93,7 +96,7 @@ describe('GET /todos/:id', () => {
       .get(`/todos/${todos[0]._id.toHexString()}`)
       .expect(200)
       .expect((res) => {
-        expect(res.body.text).toBe(todos[0].text);
+        expect(res.body.todo.text).toBe(todos[0].text);
       })
       .end(done);
       
@@ -123,20 +126,34 @@ describe('DELETE /todos/:id', () => {
 
   it('should delete a todo and return it', (done) => {
 
+    const deletedID = todos[0]._id.toHexString();
+
     request(app)
-      .get(`/todos/${todos[0]._id.toHexString()}`)
+      .delete(`/todos/${deletedID}`)
       .expect(200)
       .expect(res => {
-        expect(res.body.text).toBe(todos[0].text)
+        expect(res.body.todo._id).toBe(deletedID)
       })
-      .end(done);
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Todo.findById(deletedID).then(todo => {
+          expect(todo).toBeNull();
+          done();
+        }).catch(err => {
+          done(err);
+        });
+
+      });
 
   });
 
   it('should return 404 for invalid ID', (done) => {
 
     request(app)
-      .get(`/todo/12345`)
+      .delete(`/todo/12345`)
       .expect(404)
       .end(done);
 
@@ -147,7 +164,7 @@ describe('DELETE /todos/:id', () => {
     const anID = new ObjectID().toHexString();
 
     request(app)
-      .get(`/todo/${anID}`)
+      .delete(`/todo/${anID}`)
       .expect(404)
       .end(done);
 
