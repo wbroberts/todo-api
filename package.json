@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha server/**/*.test.js",
-    "test-w": "nodemon --exec 'npm test'"
+    "test-w": "nodemon --exec 'npm test'",
+    "start": "node server/server.js"
+  },
+  "engines": {
+    "node": "10.1.0"
   },
   "author": "William Roberts",
   "license": "ISC",
