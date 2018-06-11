@@ -74,8 +74,29 @@ app.get('/todos/:id', (req, res) => {
     if (!result) {
       return res.status(404).send();
     }
+
     res.status(200).send(result);
-  }, e => {
+  }).catch(e => {
+    res.status(400).send();
+  });
+
+});
+
+// This is for removing a todo
+app.delete('/todos/:id', (req, res) => {
+  const todoId = req.params.id;
+
+  if (!ObjectID.isValid(todoId)) {
+    return res.status(404).send();
+  }
+
+  Todo.findByIdAndRemove(todoId).then(result => {
+    if (!result) {
+      return res.status(404).send();
+    }
+
+    res.status(200).send(result);
+  }).catch(e => {
     res.status(400).send();
   });
 
