@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
+const _ = require('lodash');
 
 const { mongoose } = require('./db/mongoose');
 const { Todo } = require('./models/todo');
@@ -63,6 +64,7 @@ app.get('/todos', (req, res) => {
   });
 });
 
+// This is to GET a specific todo by its ID
 app.get('/todos/:id', (req, res) => {
   const todoId = req.params.id;
 
@@ -97,6 +99,38 @@ app.delete('/todos/:id', (req, res) => {
 
     res.status(200).send({todo: result});
   }).catch(e => {
+    res.status(400).send();
+  });
+
+});
+
+// Updating the todo
+app.patch('/todos/:id', (req, res) => {
+  const todoId = req.params.id;
+  const body = _.pick(req.body, ['text', 'completed']);
+
+  if (!ObjectID.isValid(todoId)) {
+    return res.status(404).send();
+  }
+
+  if (_.isBoolean(body.completed) && body.completed) {
+    body.completedAt = new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(todoId, {
+    $set: body
+  }, {
+    new: true
+  }).then(result => {
+    if (!result) {
+      return res.status(404).send();
+    }
+
+    res.send({result});
+  }).catch(err => {
     res.status(400).send();
   });
 
