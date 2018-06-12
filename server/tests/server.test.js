@@ -8,13 +8,19 @@ const { Todo } = require('./../models/todo');
 // Array of todos to test against
 const todos = [{
   _id: new ObjectID(),
-  text: 'first todo'
+  text: 'first todo',
+  completed: false,
+  completedAt: null
 }, {
   _id: new ObjectID(),
-  text: 'second todo'
+  text: 'second todo',
+  completed: true,
+  completedAt: 4564
 }, {
   _id: new ObjectID(),
-  text: 'third todo'
+  text: 'third todo',
+  completed: false,
+  completedAt: null
 }];
 
 // Deletes db and adds the todos up above to db for
@@ -166,6 +172,49 @@ describe('DELETE /todos/:id', () => {
     request(app)
       .delete(`/todo/${anID}`)
       .expect(404)
+      .end(done);
+
+  });
+
+});
+
+describe('PATCH /todos/:id', () => {
+
+  it('should update the todo', (done) => {
+
+    const todoID = todos[0]._id.toHexString();
+
+    request(app)
+      .patch(`/todos/${todoID}`)
+      .send({
+        completed: true,
+        text: 'this is updated'
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).not.toBe(todos[0].text);
+        expect(res.body.todo.completed).toBe(true);
+        expect(typeof res.body.todo.completedAt).toBe('number');
+      })
+      .end(done);
+  });
+
+  it('should toggle completed value and clear completedAt', (done) => {
+
+    const todoID = todos[1]._id.toHexString();
+
+    request(app)
+      .patch(`/todos/${todoID}`)
+      .send({
+        completed: false,
+        text: 'new and different'
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).not.toBe(todos[1].text);
+        expect(res.body.todo.completed).toBe(false);
+        expect(res.body.todo.completedAt).toBeNull();
+      })
       .end(done);
 
   });
