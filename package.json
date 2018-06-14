@@ -6,7 +6,7 @@
   "scripts": {
     "test": "export NODE_ENV=test || \"SET NODE_ENV=test\" && mocha server/**/*.test.js",
     "test-w": "nodemon --exec 'npm test'",
-    "start": "node server/server.js"
+    "start": "nodemon server/server.js"
   },
   "engines": {
     "node": "10.1.0"
@@ -14,11 +14,13 @@
   "author": "William Roberts",
   "license": "ISC",
   "dependencies": {
+    "ansi-colors": "^2.0.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "lodash": "^4.17.10",
     "mongodb": "^3.0.10",
-    "mongoose": "^5.1.4"
+    "mongoose": "^5.1.4",
+    "validator": "^10.3.0"
   },
   "devDependencies": {
     "expect": "^23.1.0",

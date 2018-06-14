@@ -3,7 +3,7 @@ const request = require('supertest');
 const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server');
-const { Todo } = require('./../models/todo');
+const { Todo } = require('./../api/models/todo');
 
 // Array of todos to test against
 const todos = [{
