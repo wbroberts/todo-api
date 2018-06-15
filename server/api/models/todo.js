@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-// The todo model
-const Todo = mongoose.model('Todo', {
+const todoSchema = mongoose.Schema({
   text: {
     type: String,
     required: [true, 'Why don\'t you have anything to do?'],
@@ -17,6 +16,8 @@ const Todo = mongoose.model('Todo', {
     default: null
   }
 });
+
+const Todo = mongoose.model('Todo', todoSchema);
 
 module.exports = {
   Todo

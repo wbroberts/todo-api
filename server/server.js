@@ -1,14 +1,15 @@
 require('./config/config');
 
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const c = require('ansi-colors');
 
-const { mongoose } = require('./db/mongoose');
-
-const app = express();
 const port = process.env.PORT;
 
+const { mongoose } = require('./db/mongoose');
+
+// Routes for db
 const userRoute = require('./api/users');
 const todoRoute = require('./api/todos');
 

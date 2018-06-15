@@ -10,10 +10,14 @@ router.post('/', (req, res) => {
   });
 
   user.save()
-    .then(result => {
-      res.status(201).json({
-        message: 'User successfully created',
-        user: result
+    .then(() => {
+      return user.generateAuthToken();
+    })
+    .then(token => {
+      const { email, _id } = user;
+
+      res.set('x-auth', token).json({
+        email, _id
       });
     })
     .catch(err => {
