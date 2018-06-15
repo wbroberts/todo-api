@@ -8,11 +8,13 @@ const { Todo } = require('./models/todo');
 // This is receives a GET request and sends back the todos
 // -- important for sending back JSON data
 router.get('/', (req, res) => {
-  Todo.find().then(todos => {
-    res.send({ todos });
-  }, err => {
-    res.status(400).send(err);
-  });
+  Todo.find()
+    .then(todos => {
+      res.status(200).json({todos});
+    })
+    .catch(error => {
+      res.status(404).json({error});
+    });
 });
 
 // This is to GET a specific todo by its ID
@@ -23,15 +25,17 @@ router.get('/:id', (req, res) => {
     return res.status(404).send();
   }
 
-  Todo.findById(todoId).then(result => {
-    if (!result) {
-      return res.status(404).send();
-    }
+  Todo.findById(todoId)
+    .then(result => {
+      if (!result) {
+        return res.status(404).send();
+      }
 
-    res.status(200).send({ todo: result });
-  }).catch(e => {
-    res.status(400).send();
-  });
+      res.status(200).json({todo: result});
+    })
+    .catch(() => {
+      res.status(400).send();
+    });
 
 });
 
@@ -41,11 +45,13 @@ router.post('/', (req, res) => {
     text: req.body.text
   });
 
-  todo.save().then(result => {
-    res.send(result);
-  }, err => {
-    res.status(400).send(err);
-  });
+  todo.save()
+    .then(result => {
+      res.status(201).json({todo: result});
+    }) 
+    .catch(error => {
+      res.status(400).json({error});
+    });
 });
 
 // Updating the todo
@@ -66,15 +72,17 @@ router.patch('/:id', (req, res) => {
 
   Todo.findByIdAndUpdate(todoId, {
     $set: body
-  }, {
+    }, {
       new: true
-    }).then(result => {
+    })
+    .then(result => {
       if (!result) {
         return res.status(404).send();
       }
 
-      res.send({ todo: result });
-    }).catch(err => {
+      res.status(200).json({ todo: result });
+    })
+    .catch(err => {
       res.status(400).send();
     });
 
@@ -88,15 +96,17 @@ router.delete('/:id', (req, res) => {
     return res.status(404).send();
   }
 
-  Todo.findByIdAndRemove(todoId).then(result => {
-    if (!result) {
-      return res.status(404).send();
-    }
+  Todo.findByIdAndRemove(todoId)
+    .then(result => {
+      if (!result) {
+        return res.status(404).send();
+      }
 
-    res.status(200).send({ todo: result });
-  }).catch(e => {
-    res.status(400).send();
-  });
+      res.status(200).json({ todo: result });
+    })
+    .catch(e => {
+      res.status(400).send();
+    });
 
 });
 
