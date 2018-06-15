@@ -2,7 +2,6 @@ require('./config/config');
 
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
 const c = require('ansi-colors');
 
 const port = process.env.PORT;
@@ -14,7 +13,7 @@ const userRoute = require('./api/users');
 const todoRoute = require('./api/todos');
 
 app.use(express.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/users', userRoute);
 app.use('/todos', todoRoute);

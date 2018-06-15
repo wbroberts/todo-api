@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
     .then(token => {
       const { email, _id } = user;
       res.set('x-auth', token).json({
-        email, _id
+        _id, email
       });
     })
     .catch(err => {
