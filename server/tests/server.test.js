@@ -5,31 +5,10 @@ const { ObjectID } = require('mongodb');
 const { app } = require('./../server');
 const { Todo } = require('./../api/models/todo');
 
-// Array of todos to test against
-const todos = [{
-  _id: new ObjectID(),
-  text: 'first todo',
-  completed: false,
-  completedAt: null
-}, {
-  _id: new ObjectID(),
-  text: 'second todo',
-  completed: true,
-  completedAt: 4564
-}, {
-  _id: new ObjectID(),
-  text: 'third todo',
-  completed: false,
-  completedAt: null
-}];
+const { todos, populateTodos, users, populateUsers } = require('./seed/seed');
 
-// Deletes db and adds the todos up above to db for
-// consistent and accurate testing
-beforeEach((done) => {
-  Todo.remove({}).then(() => {
-    return Todo.insertMany(todos);
-  }).then(() => done());  
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('POST /Todos', () => {
 
@@ -39,9 +18,9 @@ describe('POST /Todos', () => {
     request(app)
       .post('/todos')
       .send({ text })
-      .expect(200)
+      .expect(201)
       .expect((res) => {
-        expect(res.body.text).toBe(text);
+        expect(res.body.todo.text).toBe(text);
       })
       .end((err, res) => {
         if (err) {
@@ -214,6 +193,38 @@ describe('PATCH /todos/:id', () => {
         expect(res.body.todo.text).not.toBe(todos[1].text);
         expect(res.body.todo.completed).toBe(false);
         expect(res.body.todo.completedAt).toBeNull();
+      })
+      .end(done);
+
+  });
+
+});
+
+// BEGIN TESTING FOR USERS //
+
+describe('GET /users/me', () => {
+
+  it('should return user if authenticated', (done) => {
+
+    request(app)
+      .get('/users/me')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .expect(res => {
+        expect(res.body._id).toBe(users[0]._id.toHexString());
+        expect(res.body.email).toBe(users[0].email);
+      })
+      .end(done);
+
+  });
+
+  it('should return a 401 if not authenticated', (done) => {
+
+    request(app)
+      .get('/users/me')
+      .expect(401)
+      .expect(res => {
+        expect(res.body).toEqual({});
       })
       .end(done);
 
