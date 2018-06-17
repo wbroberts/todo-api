@@ -17,7 +17,7 @@ router.post('/', (req, res) => {
     })
     .then(token => {
       const { email, _id } = user;
-      res.set('x-auth', token).json({
+      res.status(201).set('x-auth', token).json({
         _id, email
       });
     })

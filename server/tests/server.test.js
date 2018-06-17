@@ -4,6 +4,7 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server');
 const { Todo } = require('./../api/models/todo');
+const { User } = require('./../api/models/user');
 
 const { todos, populateTodos, users, populateUsers } = require('./seed/seed');
 
@@ -226,6 +227,64 @@ describe('GET /users/me', () => {
       .expect(res => {
         expect(res.body).toEqual({});
       })
+      .end(done);
+
+  });
+
+});
+
+describe('POST /users', () => {
+
+  it('should create a new user', (done) => {
+    const email = 'willbb@example.com';
+    const password = 'password!';
+
+    request(app)
+      .post('/users')
+      .send({email, password})
+      .expect(201)
+      .expect(res => {
+        expect(res.headers['x-auth']).toBeDefined();
+        expect(res.body._id).toBeDefined();
+        expect(res.body.email).toBe(email);
+      })
+      .end(error => {
+        if (error) {
+          return done(error);
+        }
+
+        User.findOne({email}).then(res => {
+          expect(res._id).toBeDefined();
+          expect(res.email).toBe(email);
+          expect(res.password).not.toBe(password);
+          done();
+        })
+      });
+
+  });
+
+  it('should return 400 because of an invalid email', (done) => {
+
+    request(app)
+      .post('/users')
+      .send({
+        email: 'will@exa',
+        password: 'password'
+      })
+      .expect(400)
+      .end(done);
+
+  });
+
+  it('should not create a user if the email is already in use', (done) => {
+
+    request(app)
+      .post('/users')
+      .send({
+        email: 'fake@email.com', 
+        password: 'password'
+      })
+      .expect(400)
       .end(done);
 
   });
