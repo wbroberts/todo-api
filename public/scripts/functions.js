@@ -1,8 +1,6 @@
-const url = 'http://localhost:3000' || 'http://shrouded-chamber-64352.herokuapp.com';
-
 // Gets all todos from db
 const getTodos = () => {
-  axios.get(`${url}/todos`)
+  axios.get(`./todos`)
     .then(result => {
       renderAllTodos(result.data.todos);
     })
@@ -13,13 +11,13 @@ const getTodos = () => {
 
 // Removes the todo from db and resets DOM
 const removeTodo = (todo) => {
-  axios.delete(`${url}/todos/${todo._id}`);
+  axios.delete(`./todos/${todo._id}`);
   getTodos();
 }
 
 // Marks the todo complete or incomplete and resets DOM
 const markComplete = (todo) => {
-  axios.patch(`${url}/todos/${todo._id}`, {
+  axios.patch(`./todos/${todo._id}`, {
     completed: !todo.completed
   });
   getTodos();
