@@ -1,8 +1,13 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   width: 50%;
-  margin: 0 auto;
 }
 
 form input {
@@ -33,4 +38,10 @@ form input {
 .todo-container button {
   background: transparent;
   border: none;
+  outline: none;
+}
+
+.todo-container button:hover {
+  color: lightseagreen;
+  cursor: pointer;
 }

@@ -1,5 +1,6 @@
 const url = 'http://localhost:3000';
 
+// Gets all todos from db
 const getTodos = () => {
   axios.get(`${url}/todos`)
     .then(result => {
@@ -10,11 +11,13 @@ const getTodos = () => {
     });
 }
 
+// Removes the todo from db and resets DOM
 const removeTodo = (todo) => {
   axios.delete(`${url}/todos/${todo._id}`);
   getTodos();
 }
 
+// Marks the todo complete or incomplete and resets DOM
 const markComplete = (todo) => {
   axios.patch(`${url}/todos/${todo._id}`, {
     completed: !todo.completed
@@ -22,15 +25,17 @@ const markComplete = (todo) => {
   getTodos();
 }
 
+// Basic rendering while iterating through the todos
 const renderAllTodos = (todos) => {
   const todoList = document.querySelector('.todos-list');
   todoList.textContent = '';
-
-  todos.forEach(todo => {
-    todoList.insertAdjacentElement('beforeend', renderTodo(todo));
-  });
+  sortIncomplete(todos)
+    .forEach(todo => {
+      todoList.insertAdjacentElement('afterbegin', renderTodo(todo));
+    });
 }
 
+// Renders each todo div
 const renderTodo = (todo) => {
   const div = document.createElement('div');
   div.className = 'todo-container';
@@ -49,5 +54,14 @@ const renderTodo = (todo) => {
   div.insertAdjacentElement('beforeend', p);
   div.insertAdjacentElement('beforeend', button);
 
-  return div
+  return div;
+}
+
+// Sorts the todos by its completed status
+const sortIncomplete = (todos) => {
+  return todos.sort((a, b) => {
+    if (a.completed && !b.completed) return -1;
+    else if (!a.completed && b.completed) return 1;
+    else return 0;
+  });
 }
