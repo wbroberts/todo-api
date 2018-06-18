@@ -1,4 +1,4 @@
-const url = 'http://localhost:3000';
+const url = 'http://localhost:3000' || 'http://shrouded-chamber-64352.herokuapp.com';
 
 // Gets all todos from db
 const getTodos = () => {
