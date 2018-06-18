@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 0 auto;
+}
+
+form input {
+  outline: none;
+  border: none;
+  border-bottom: 1px solid lightblue;
+}
+
+.todo-container p:hover {
+  cursor: pointer;
+}
+
+.completed {
+  color: #999999;
+  text-decoration: line-through; 
+}
+
+.todo-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+}
+
+.todo-container:hover {
+  background: lightcyan;
+}
+
+.todo-container button {
+  background: transparent;
+  border: none;
+}

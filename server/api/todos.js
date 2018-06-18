@@ -47,7 +47,10 @@ router.post('/', (req, res) => {
 
   todo.save()
     .then(result => {
-      res.status(201).json({todo: result});
+      const {text, completed} = result;
+
+      res.status(201).json({
+        todo: {text, completed}});
     }) 
     .catch(error => {
       res.status(400).json({error});

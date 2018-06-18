@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 
 const { User } = require('./models/user');
 const { authenticate } = require('./middleware/authenticate');
@@ -27,6 +28,22 @@ router.post('/', (req, res) => {
       });
     });
 
+});
+
+router.post('/login', (req, res) => {
+  const {email, password} = req.body;
+
+ User.findByCredentials(email, password)
+  .then(user => {
+    res.status(200).json({
+      user
+    });
+  })
+  .catch(error => {
+    res.status(404).json({
+      error
+    });
+  });
 });
 
 router.get('/me', authenticate, (req, res) => {
