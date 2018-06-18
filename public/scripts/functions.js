@@ -3,6 +3,7 @@ const getTodos = () => {
   axios.get(`./todos`)
     .then(result => {
       renderAllTodos(result.data.todos);
+      console.log(result.data.todos)
     })
     .catch(error => {
       console.log(error);
