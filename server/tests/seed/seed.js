@@ -18,7 +18,11 @@ const users = [{
 }, {
   _id: user2ID,
   email: 'fakeMaeve@fake.com',
-  password: 'user2fake'
+  password: 'user2fake',
+  tokens: [{
+    access: 'auth',
+    token: jwt.sign({ _id: user2ID, access: 'auth' }, '123abc').toString()
+  }]
 }];
 
 const populateUsers = (done) => {
@@ -35,17 +39,20 @@ const todos = [{
   _id: new ObjectID(),
   text: 'first todo',
   completed: false,
-  completedAt: null
+  completedAt: null,
+  creator_id: users[0]._id
 }, {
   _id: new ObjectID(),
   text: 'second todo',
   completed: true,
-  completedAt: 4564
+  completedAt: 4564,
+  creator_id: users[0]._id
 }, {
   _id: new ObjectID(),
   text: 'third todo',
   completed: false,
-  completedAt: null
+  completedAt: null,
+  creator_id: users[1]._id
 }]
 
 // Deletes db and adds the todos up above to db for

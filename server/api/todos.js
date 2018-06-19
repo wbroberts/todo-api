@@ -4,11 +4,12 @@ const { ObjectID } = require('mongodb');
 const _ = require('lodash');
 
 const { Todo } = require('./models/todo');
+const { authenticate } = require('./middleware/authenticate');
 
 // This is receives a GET request and sends back the todos
 // -- important for sending back JSON data
-router.get('/', (req, res) => {
-  Todo.find()
+router.get('/', authenticate, (req, res) => {
+  Todo.find({creator_id: req.user._id})
     .then(todos => {
       res.status(200).json({todos});
     })
@@ -18,14 +19,14 @@ router.get('/', (req, res) => {
 });
 
 // This is to GET a specific todo by its ID
-router.get('/:id', (req, res) => {
+router.get('/:id', authenticate, (req, res) => {
   const todoId = req.params.id;
 
   if (!ObjectID.isValid(todoId)) {
     return res.status(404).send();
   }
 
-  Todo.findById(todoId)
+  Todo.findOne({_id: todoId, creator_id: req.user._id})
     .then(result => {
       if (!result) {
         return res.status(404).send();
@@ -40,9 +41,10 @@ router.get('/:id', (req, res) => {
 });
 
 // This is for creating todos
-router.post('/', (req, res) => {
+router.post('/', authenticate, (req, res) => {
   const todo = new Todo({
-    text: req.body.text
+    text: req.body.text,
+    creator_id: req.user._id
   });
 
   todo.save()
@@ -58,7 +60,7 @@ router.post('/', (req, res) => {
 });
 
 // Updating the todo
-router.patch('/:id', (req, res) => {
+router.patch('/:id', authenticate, (req, res) => {
   const todoId = req.params.id;
   const body = _.pick(req.body, ['text', 'completed']);
 
@@ -73,7 +75,7 @@ router.patch('/:id', (req, res) => {
     body.completedAt = null;
   }
 
-  Todo.findByIdAndUpdate(todoId, {
+  Todo.findOneAndUpdate({_id: todoId, creator_id: req.user._id}, {
     $set: body
     }, {
       new: true
@@ -92,14 +94,14 @@ router.patch('/:id', (req, res) => {
 });
 
 // This is for removing a todo
-router.delete('/:id', (req, res) => {
+router.delete('/:id', authenticate, (req, res) => {
   const todoId = req.params.id;
 
   if (!ObjectID.isValid(todoId)) {
     return res.status(404).send();
   }
 
-  Todo.findByIdAndRemove(todoId)
+  Todo.findOneAndRemove({_id: todoId, creator_id: req.user._id})
     .then(result => {
       if (!result) {
         return res.status(404).send();
