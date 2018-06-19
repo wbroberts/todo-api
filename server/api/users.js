@@ -27,7 +27,6 @@ router.post('/', (req, res) => {
         error: err
       });
     });
-
 });
 
 router.post('/login', (req, res) => {
@@ -51,6 +50,21 @@ router.post('/login', (req, res) => {
 
 router.get('/me', authenticate, (req, res) => {
   res.send(req.user);
+});
+
+router.delete('/me/token', authenticate, (req, res) => {
+  User.findOne(req.user._id)
+    .then(user => {
+      return user.removeToken(req.token)
+    })
+    .then(() => {
+      res.json({
+        message: 'Successfully logged out'
+      })
+    })
+    .catch(error => {
+      res.status(401).send();
+    });
 });
 
 module.exports = router;

@@ -69,6 +69,14 @@ userSchema.statics.findByToken = function(token) {
   })
 }
 
+userSchema.methods.removeToken = function(token) {
+  return this.update({
+    $pull: {
+      tokens: {token}
+    }
+  })
+}
+
 userSchema.pre('save', function(next) {
   
   if (this.isModified('password')) {
@@ -100,11 +108,11 @@ userSchema.statics.findByCredentials = function(email, password) {
             return resolve(user);
           }
         });
-      });
-        
-    })
+      });    
+    });
   
 }
+
 
 const User = mongoose.model('User', userSchema);
 
