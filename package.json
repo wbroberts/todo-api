@@ -6,7 +6,8 @@
   "scripts": {
     "test": "export NODE_ENV=test || \"SET NODE_ENV=test\" && mocha server/**/*.test.js",
     "test-w": "nodemon --exec 'npm test'",
-    "start": "nodemon server/server.js"
+    "start": "node server/server.js",
+    "server": "nodemon server/server.js"
   },
   "engines": {
     "node": "10.1.0"
