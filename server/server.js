@@ -11,6 +11,7 @@ const { mongoose } = require('./db/mongoose');
 // Routes for db
 const userRoute = require('./api/users');
 const todoRoute = require('./api/todos');
+const homeRoute = require('./api/home');
 
 app.use(express.static(__dirname + './../public'));
 
@@ -19,6 +20,7 @@ app.use(express.json());
 
 app.use('/users', userRoute);
 app.use('/todos', todoRoute);
+app.use('/', homeRoute);
 
 // This is the actual server running
 app.listen(port, () => {
