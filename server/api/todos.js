@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { ObjectID } = require('mongodb');
-const _ = require('lodash');
 
-const { Todo } = require('./models/todo');
 const { authenticate } = require('./middleware/authenticate');
 const helper = require('./functions/todo-func');
 
